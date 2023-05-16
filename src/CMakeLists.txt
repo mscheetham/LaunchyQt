@@ -360,44 +360,7 @@ add_custom_command (TARGET Plugin.Runner POST_BUILD
   ${RESOURCES_RUNNER} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/$<CONFIG>/plugins/Runner)
 
 ##################################################
-if (WIN32)
-# plugin: Tasky
-add_library (Plugin.Tasky MODULE)
 
-set_target_properties(Plugin.Tasky PROPERTIES
-  OUTPUT_NAME "Tasky")
-
-file (GLOB SOURCES_TASKY
-  ${SRC_DIR}/Plugins/Tasky/*.h
-  ${SRC_DIR}/Plugins/Tasky/*.cpp)
-
-# qt source files
-file (GLOB SOURCES_QT_TASKY
-  ${SRC_DIR}/Plugins/Tasky/*.ui
-  ${SRC_DIR}/Plugins/Tasky/*.qrc
-  ${SRC_DIR}/Plugins/Tasky/*.ts)
-source_group ("Qt Files" FILES ${SOURCES_QT_TASKY})
-list (APPEND SOURCES_TASKY ${SOURCES_QT_TASKY})
-
-target_sources (Plugin.Tasky
-  PRIVATE ${SOURCES_TASKY})
-
-target_link_libraries (Plugin.Tasky
-  PUBLIC Qt6::Core
-  PRIVATE Qt6::Widgets
-  PRIVATE LaunchyLib)
-
-set_target_properties (Plugin.Tasky PROPERTIES
-  LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Debug/plugins/Tasky"
-  LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Release/plugins/Tasky")
-
-file (GLOB RESOURCES_TASKY
-  ${SRC_DIR}/Plugins/Tasky/*.png)
-
-add_custom_command (TARGET Plugin.Tasky POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_if_different
-  ${RESOURCES_TASKY} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/$<CONFIG>/plugins/Tasky)
-endif ()
 ##################################################
 if (WIN32)
 # plugin: UWPApp
