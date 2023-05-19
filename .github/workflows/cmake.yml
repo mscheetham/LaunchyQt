@@ -31,7 +31,6 @@ jobs:
         host: 'windows'
         target: 'desktop'
         arch: 'win64_msvc2019_64'
-        modules: 'qt5compat'
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
@@ -42,9 +41,12 @@ jobs:
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}\build --config ${{env.BUILD_TYPE}}
 
-# Archive the package
+    - name: Deploy
+      run: ${QT_ROOT_DIR}\bin\windeployqt ${{github.workspace}}\build\bin\Release\launchy.exe
+    
+    # Archive the package
     - name: Create archive
-      run: Compress-Archive -Path ${{github.workspace}}\build\* -DestinationPath ${{github.workspace}}\AppPackages.zip
+      run: Compress-Archive -Path ${{github.workspace}}\build\bin\Release\* -DestinationPath ${{github.workspace}}\launchy.zip
 
     # Create the release:  https://github.com/actions/create-release
     - name: Create release
@@ -67,5 +69,5 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}  # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
         asset_path: ${{github.workspace}}\${{ env.App_Packages_Archive }}
-        asset_name: 'AppPackages.zip'
+        asset_name: 'launchy.zip'
         asset_content_type: application/zip
