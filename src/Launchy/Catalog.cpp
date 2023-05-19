@@ -195,7 +195,7 @@ QString Catalog::decorateText(const QString& text, const QString& match, bool ou
             && (outputRichText || curChar < 15)) {
             if (outputRichText) {
                 if (!highlighted) {
-                    decoratedText += "<u class="decoratedText">";
+                    decoratedText += "<u class='decoratedText'>";
                     highlighted = true;
                 }
                 decoratedText += c;
