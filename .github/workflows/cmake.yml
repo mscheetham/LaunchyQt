@@ -41,7 +41,9 @@ jobs:
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}\build --config ${{env.BUILD_TYPE}}
     - name: copystuff
+      continue-on-error: true
       run: robocopy "${{github.workspace}}\skins" "${{github.workspace}}\build\bin\Release\skins" /e /w:5 /r:2 /COPY:DATSOU /DCOPY:DAT /MT
+    
     - name: Deploy
       run: windeployqt ${{github.workspace}}\build\bin\Release\launchy.exe
     
