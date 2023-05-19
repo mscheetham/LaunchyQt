@@ -42,7 +42,7 @@ jobs:
       run: cmake --build ${{github.workspace}}\build --config ${{env.BUILD_TYPE}}
 
     - name: Deploy
-      run: ${QT_ROOT_DIR}\bin\windeployqt ${{github.workspace}}\build\bin\Release\launchy.exe
+      run: windeployqt ${{github.workspace}}\build\bin\Release\launchy.exe
     
     # Archive the package
     - name: Create archive
