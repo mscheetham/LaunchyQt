@@ -9,7 +9,7 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
-  App_Packages_Archive: AppPackages.zip
+  App_Packages_Archive: launchy.zip
   App_Packages_Directory: AppPackages
 
 jobs:
