@@ -126,6 +126,7 @@ LaunchyWidget::LaunchyWidget(CommandFlags command)
             this, SLOT(onInputBoxInputMethod(QInputMethodEvent*)));
 
     m_outputBox->setObjectName("output");
+    m_outputBox->setProperty("cssClass", "decoratedText");
     m_outputBox->setAlignment(Qt::AlignHCenter);
 
     m_outputIcon->setObjectName("outputIcon");
