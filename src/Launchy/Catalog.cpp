@@ -195,7 +195,7 @@ QString Catalog::decorateText(const QString& text, const QString& match, bool ou
             && (outputRichText || curChar < 15)) {
             if (outputRichText) {
                 if (!highlighted) {
-                    decoratedText += "<u class='decoratedText'>";
+                    decoratedText += "<span style='color:black'>";
                     highlighted = true;
                 }
                 decoratedText += c;
@@ -206,7 +206,7 @@ QString Catalog::decorateText(const QString& text, const QString& match, bool ou
         }
         else {
             if (outputRichText && highlighted) {
-                decoratedText += "</u>";
+                decoratedText += "</span>";
                 highlighted = false;
             }
             decoratedText += c;
@@ -214,7 +214,7 @@ QString Catalog::decorateText(const QString& text, const QString& match, bool ou
     }
 
     if (outputRichText && highlighted) {
-        decoratedText += "</u>";
+        decoratedText += "</span>";
         highlighted = false;
     }
 
