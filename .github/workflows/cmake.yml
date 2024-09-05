@@ -51,71 +51,31 @@ jobs:
     - name: Create archive
       run: Compress-Archive -Path ${{github.workspace}}\build\bin\Release\* -DestinationPath ${{github.workspace}}\launchy.zip
 
-  ChatGPT 3.5
-User
-  # Create the release:  https://github.com/actions/create-release
-    - name: Create release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-      with:
-        tag_name: test
-        release_name:  test
-        draft: false
-        prerelease: false
-2 / 2
-ChatGPT
 
-The code you provided is a part of a GitHub Actions workflow that creates a release using the actions/create-release action. This action allows you to automate the process of creating releases for your GitHub repositories. Here's a breakdown of what this code does:
-
-    The workflow uses the actions/create-release@v1 action, which is a pre-defined GitHub Action for creating releases.
-
-    It assigns a unique identifier (id) to the action step, which can be used later in the workflow.
-
-    It sets an environment variable GITHUB_TOKEN using the GitHub Actions built-in secret ${{ secrets.GITHUB_TOKEN }}. This token is automatically provided by GitHub Actions and is used for authentication and authorization purposes.
-
-    It provides input parameters to the create-release action using the with section:
-        tag_name: This specifies the tag name for the release. In this case, it's set to test.
-        release_name: This specifies the name of the release. It's also set to test in this example.
-        draft: This boolean value determines whether the release should be created as a draft (false in this case, meaning it's not a draft).
-        prerelease: This boolean value determines whether the release should be marked as a pre-release (false in this case, meaning it's a regular release).
-
-    The action will create a new release on the GitHub repository with the specified tag and release name, and it will not be a draft or a pre-release.
-
-To use this workflow in your GitHub repository, you can create a .github/workflows directory in your repository and create a YAML file (e.g., create-release.yml) with the content you provided. Then, whenever a workflow event triggers it, the workflow will create a release with the specified parameters.
-User
-How can I modify it so it does not cause "already exists" error on build
-ChatGPT
-
-If you want to modify the workflow to avoid causing an "already exists" error when creating a release, you can check if the release with the same tag already exists before attempting to create it. Here's an updated version of your workflow that includes a check for the existing release:
-
-yaml
-
-name: Create Release
-
-on:
-  push:
-    branches:
-      - main # Replace with the branch you want to trigger the release on
-
-jobs:
-  create_release:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check if release already exists
-        id: check_release
-        run: |
-          TAG_NAME="test"
-          RELEASE_ID=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/releases/tags/$TAG_NAME" | jq -r .id)
-          if [ -n "$RELEASE_ID" ]; then
-            echo "Release $TAG_NAME already exists with ID $RELEASE_ID."
-            echo "::set-output name=release_id::$RELEASE_ID"
-          else
-            echo "Release $TAG_NAME does not exist."
-            echo "::set-output name=release_id::"
-          fi
+    - name: Create Release
+    
+    on:
+      push:
+        branches:
+          - main # Replace with the branch you want to trigger the release on
+    
+    jobs:
+      create_release:
+        runs-on: ubuntu-latest
+    
+        steps:
+          - name: Check if release already exists
+            id: check_release
+            run: |
+              TAG_NAME="test"
+              RELEASE_ID=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/releases/tags/$TAG_NAME" | jq -r .id)
+              if [ -n "$RELEASE_ID" ]; then
+                echo "Release $TAG_NAME already exists with ID $RELEASE_ID."
+                echo "::set-output name=release_id::$RELEASE_ID"
+              else
+                echo "Release $TAG_NAME does not exist."
+                echo "::set-output name=release_id::"
+              fi
 
       - name: Create release if it doesn't exist
         if: steps.check_release.outputs.release_id == ''
