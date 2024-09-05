@@ -487,7 +487,7 @@ void OptionDialog::dirRowChanged(int row) {
     foreach(QString str, m_memDirs[row].types) {
         QListWidgetItem* item = new QListWidgetItem(str, m_pUi->catTypes);
         item->setFlags(item->flags() | Qt::ItemIsEditable);
-        item->setSizeHint(QSize(200, 20));
+        item->setSizeHint(QSize(200, 24));
     }
     m_pUi->catTypes->blockSignals(false);
 
@@ -596,6 +596,8 @@ void OptionDialog::initGeneralWidget() {
     }
 
     // general options
+    m_pUi->genIgnoreFullScreen->setChecked(g_settings->value(OPTION_IGNORE_FULL_SCREEN, OPTION_IGNORE_FULL_SCREEN_DEFAULT).toBool());
+
     m_pUi->genAlwaysShow->setChecked(g_settings->value(OPTION_ALWAYSSHOW, OPTION_ALWAYSSHOW_DEFAULT).toBool());
 
     m_pUi->genHideFocus->setChecked(g_settings->value(OPTION_HIDEIFLOSTFOCUS, OPTION_HIDEIFLOSTFOCUS_DEFAULT).toBool());
@@ -688,7 +690,7 @@ bool OptionDialog::saveGeneralSettings() {
     g_settings->setValue(OPTION_HOTKEY, hotkey.isEmpty() ? OPTION_HOTKEY_DEFAULT : hotkey[0].toCombined());
 
     // Save General Options
-    // g_settings->setValue("GenOps/showtrayicon", genShowTrayIcon->isChecked());
+    g_settings->setValue(OPTION_IGNORE_FULL_SCREEN, m_pUi->genIgnoreFullScreen->isChecked());
     g_settings->setValue(OPTION_ALWAYSSHOW, m_pUi->genAlwaysShow->isChecked());
     g_settings->setValue(OPTION_ALWAYSTOP, m_pUi->genAlwaysTop->isChecked());
 
@@ -753,6 +755,7 @@ void OptionDialog::initSkinWidget() {
                 continue;
 
             QListWidgetItem* item = new QListWidgetItem(d, m_pUi->skinList);
+            item->setSizeHint(QSize(100, 24));
             m_pUi->skinList->addItem(item);
 
             if (skinName.compare(d, Qt::CaseInsensitive) == 0)
@@ -791,8 +794,6 @@ void OptionDialog::initCatalogWidget() {
         m_pUi->catDirectories->addItem(item);
     }
 
-    m_pUi->catDirectories->setCurrentRow(-1);
-
     connect(m_pUi->catDirectories, SIGNAL(currentRowChanged(int)),
             this, SLOT(dirRowChanged(int)));
     connect(m_pUi->catDirectories, SIGNAL(dragEnter(QDragEnterEvent*)),
@@ -801,8 +802,8 @@ void OptionDialog::initCatalogWidget() {
             this, SLOT(catDirDrop(QDropEvent*)));
     connect(m_pUi->catDirectories, SIGNAL(itemChanged(QListWidgetItem*)),
             this, SLOT(catDirItemChanged(QListWidgetItem*)));
-    //connect(m_pUi->catDirectories, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
-    // this, SLOT(onCatDirItemActivated(QListWidgetItem*)));
+    // connect(m_pUi->catDirectories, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
+    //         this, SLOT(onCatDirItemActivated(QListWidgetItem*)));
 
     connect(m_pUi->catDirPlus, SIGNAL(clicked(bool)),
             this, SLOT(catDirPlusClicked(bool)));
@@ -835,6 +836,8 @@ void OptionDialog::initCatalogWidget() {
         catalogProgressUpdated(g_builder->getProgress());
     }
     //m_pUi->catDirectories->installEventFilter(this);
+
+    m_pUi->catDirectories->setCurrentRow(0);
 }
 
 void OptionDialog::saveCatalogSettings() {
@@ -847,6 +850,7 @@ void OptionDialog::initPluginsWidget() {
     // PluginHandler::instance().loadPlugins();
     foreach(const PluginInfo& info, PluginHandler::instance().getPlugins()) {
         QListWidgetItem* item = new QListWidgetItem(info.name, m_pUi->plugList);
+        item->setSizeHint(QSize(100, 24));
         m_pUi->plugList->addItem(item);
         item->setData(Qt::UserRole, info.name);
         item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -1005,7 +1009,8 @@ void OptionDialog::initSystemWidget() {
     }
     */
 
-    m_pUi->cbLanguage->addItem(QString("English"), QString("en")); // English is default
+    // English is default
+    m_pUi->cbLanguage->addItem(QString("English"), QString("en"));
     int indexLang = 0;
     // load language from directory
     QList<QLocale> locales = TranslationManager::instance().getAllLocales();
@@ -1040,6 +1045,8 @@ void OptionDialog::initAboutWidget() {
     // About
     m_pUi->aboutVer->setText(tr("Version %1").arg(LAUNCHY_VERSION_STRING));
     m_pUi->aboutBit->setText(tr("(%1-bit)").arg(LAUNCHY_BIT_STRING));
+    connect(m_pUi->pushButtonAboutQt, &QPushButton::clicked,
+            g_app, &QApplication::aboutQt);
 }
 
 void OptionDialog::addDirectory(const QString& directory, bool edit) {
