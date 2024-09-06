@@ -300,6 +300,8 @@ qt_add_lrelease(Launchy
 # add_custom_target (LaunchyQM
 #  DEPENDS ${QM_FILES_LAUNCHY})
 
+file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>/translations)
+
 message (STATUS "QM_FILES_LAUNCHY: ${QM_FILES_LAUNCHY}")
 add_custom_command (TARGET Launchy_lrelease POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_if_different
