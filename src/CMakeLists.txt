@@ -297,18 +297,16 @@ qt_add_lrelease(Launchy
 
 #set_source_files_properties(${TS_FILES_LAUNCHY} PROPERTIES
 #  OUTPUT_LOCATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/translations)
-# Create the translations directory if it doesn't exist
-
 
 # add_custom_target (LaunchyQM
 #  DEPENDS ${QM_FILES_LAUNCHY})
 
-file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>/translations)
-
 message (STATUS "QM_FILES_LAUNCHY: ${QM_FILES_LAUNCHY}")
-add_custom_command (TARGET Launchy_lrelease POST_BUILD
+add_custom_command(TARGET Launchy_lrelease POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>/translations
   COMMAND ${CMAKE_COMMAND} -E copy_if_different
-  ${QM_FILES_LAUNCHY} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>/translations)
+  ${QM_FILES_LAUNCHY} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>/translations
+)
 
 ##################################################
 # QSingleApplication
